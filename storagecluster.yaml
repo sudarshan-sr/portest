@@ -1,0 +1,48 @@
+# SOURCE: https://install.portworx.com/?operator=true&mc=false&kbver=1.24.9&ns=portworx&b=true&kd=type%3DPremium_LRS%2Csize%3D150&s=%22type%3DStandard_LRS%2Csize%3D50%22&c=px-cluster-b5766eec-862e-4f0d-98ed-abfd797751a3&aks=true&stork=true&csi=true&mon=true&tel=false&st=k8s&promop=true
+kind: StorageCluster
+apiVersion: core.libopenstorage.org/v1
+metadata:
+  name: px-cluster-b5766eec-862e-4f0d-98ed-abfd797751a3
+  namespace: portworx
+  annotations:
+    portworx.io/install-source: "https://install.portworx.com/?operator=true&mc=false&kbver=1.24.9&ns=portworx&b=true&kd=type%3DPremium_LRS%2Csize%3D150&s=%22type%3DStandard_LRS%2Csize%3D50%22&c=px-cluster-b5766eec-862e-4f0d-98ed-abfd797751a3&aks=true&stork=true&csi=true&mon=true&tel=false&st=k8s&promop=true"
+    portworx.io/is-aks: "true"
+spec:
+  image: portworx/oci-monitor:2.13.0
+  imagePullPolicy: Always
+  kvdb:
+    internal: true
+  cloudStorage:
+    deviceSpecs:
+    - type=Standard_LRS,size=50
+    kvdbDeviceSpec: type=Premium_LRS,size=150
+  secretsProvider: k8s
+  stork:
+    enabled: true
+    args:
+      webhook-controller: "true"
+  autopilot:
+    enabled: true
+  csi:
+    enabled: true
+  monitoring:
+    prometheus:
+      enabled: true
+      exportMetrics: true
+  env:
+  # - name: AZURE_CLIENT_SECRET
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: px-azure
+  #       key: AZURE_CLIENT_SECRET
+  - name: AZURE_CLIENT_ID
+    valueFrom:
+      secretKeyRef:
+        name: px-azure
+        key: AZURE_CLIENT_ID
+  # - name: AZURE_TENANT_ID
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: px-azure
+  #       key: AZURE_TENANT_ID
+
